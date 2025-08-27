@@ -1,5 +1,5 @@
 # SOCIOL 690S: Machine Learning in Causal Inference
-*Duke University · Fall 2025*
+** Taught by Wenhao Jiang · Department of Sociology · Duke University · Fall 2025*
 
 ---
 
