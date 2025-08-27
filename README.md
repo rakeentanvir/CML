@@ -1,5 +1,5 @@
 # SOCIOL 690S: Machine Learning in Causal Inference
-** Taught by Wenhao Jiang · Department of Sociology · Duke University · Fall 2025*
+<p align="center"><b> Taught by Wenhao Jiang · Department of Sociology · Duke University · Fall 2025 </b></p>
 
 ---
 
@@ -11,12 +11,12 @@ This week sets the stage for the course and introduces how *Machine Learning (ML
 - Understand the motivation for integrating ML into causal inference.
 - Recognize the role of *high-dimensional data* and potential *non-linear relations* as drivers of this integration.
 - Review statistical properties of *Linear Regression*.
-- Apply the *Frisch–Waugh–Lovell Theorem (FWL)*.
-- Summarize the concept of *Neyman Orthogonality* as an extension of FWL Theorem.
+- Apply the *Frisch–Waugh–Lovell Theorem (FWL)* in linear regression.
+- Summarize the concept of *Neyman Orthogonality* as an extension of the FWL Theorem.
 
 ### Materials
-- [Slides: Week 1 Introduction]("Week 1 Motivation and Linear Regression/Week 1 Slides.pdf")
-- [Supplements: Asymptotic OLS Inference]("Week 1 Motivation and Linear Regression/Week 1 Supplements.pdf")
+- [Slides: Week 1 Introduction]("./Week 1 Motivation and Linear Regression/Week 1 Slides.pdf")
+- [Supplements: Asymptotic OLS Inference]("./Week 1 Motivation and Linear Regression/Week 1 Supplements.pdf")
 
 > **Optional Reading:** For students who wish to dive deeper, see the *Week 1 Supplements* on asymptotic OLS inference.
 
