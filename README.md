@@ -1,4 +1,5 @@
-# SOCIOL 690S: Machine Learning in Causal Inference
+<h1 align="center">SOCIOL 690S: Machine Learning in Causal Inference</h1>
+
 <p align="center"><b> Taught by Wenhao Jiang · Department of Sociology · Duke University · Fall 2025 </b></p>
 
 ---
@@ -15,8 +16,8 @@ This week sets the stage for the course and introduces how *Machine Learning (ML
 - Summarize the concept of *Neyman Orthogonality* as an extension of the FWL Theorem.
 
 ### Materials
-- [Slides: Week 1 Introduction]("./Week 1 Motivation and Linear Regression/Week 1 Slides.pdf")
-- [Supplements: Asymptotic OLS Inference]("./Week 1 Motivation and Linear Regression/Week 1 Supplements.pdf")
+-[Slides: Week 1 Introduction](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Slides.pdf)  
+-[Supplements: Asymptotic OLS Inference](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Supplements.pdf)
 
 > **Optional Reading:** For students who wish to dive deeper, see the *Week 1 Supplements* on asymptotic OLS inference.
 
