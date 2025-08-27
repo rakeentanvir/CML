@@ -1,0 +1,316 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{fontspec}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{newpxtext}
+\usepackage{newpxmath}
+\usepackage{comment}
+
+%% colors in Duke's navy blue
+\definecolor{titlecolor}{RGB}{0,0,128}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=titlecolor,
+    urlcolor=titlecolor
+}
+
+%% itemize style
+\setlist[itemize]{noitemsep, topsep=2pt}
+
+%% section style
+\titleformat{\section}{\color{titlecolor}\normalfont\Large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{}{0em}{}
+\setlength{\parskip}{3pt}
+
+%% footer only (no top line)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\rfoot{\thepage}
+
+%% subsection font size
+\titleformat{\subsection}
+  {\normalfont\fontsize{13.5}{15}\selectfont\bfseries}{}{0em}{}
+
+\begin{document}
+
+%% title block
+\noindent {\Large \textcolor{titlecolor}{SOC 690S Machine Learning in Causal Inference \\[3pt] Methodological Foundations and Sociological Applications}}\\[0pt]
+
+\subsection*{Time and Location}
+
+Fall 2025\\
+Tuesdays 3:05--5:35PM\\
+Erwin Square Plaza Room 753
+
+\vspace{0.5em}
+
+\subsection*{Instructor Information}
+
+\begin{tabular}{@{}l l@{}}
+\textbf{\textcolor{titlecolor}{Professor}} & Wenhao Jiang \\
+\textbf{\textcolor{titlecolor}{Email}} & \href{mailto:wenhao.jiang@duke.edu}{wenhao.jiang@duke.edu} \\
+\textbf{\textcolor{titlecolor}{Office Hours}} & Wednesdays 10AM - 12PM or by appointment \\
+\end{tabular}
+
+\vspace{0.5em}
+
+\subsection*{Course Overview and Prerequisites}
+
+This course introduces the foundations and frontiers of causal inference, machine learning (ML), and their integration in social science research. The course begins with linear regression and its statistical properties, especially in moderately high-dimensional settings, and motivate the use of ML when data are high-dimensional or exhibit nonlinear relationships. Core ML techniques, including regularized regression, tree-based models, and neural networks, are introduced, alongside the modern causal inference framework, covering potential outcomes, randomized experiments, and directed acyclic graphs (DAGs). The goal is to provide a unified foundation for understanding both predictive modeling and causal identification.
+
+Building on these foundations, the course covers advanced topics in causal inference, many of which integrate machine learning methods for flexible estimation and robust inference, such as propensity score methods (PSM) and weighting, regression discontinuity design (RDD), difference-in-differences (DID), instrumental variables (IV), heterogeneous treatment effects, and synthetic control methods. We will also explore emerging methods for causal analysis using unstructured data, including feature engineering from text and image embeddings. The course closes with a forward-looking discussion on causal reasoning within ML.
+
+The class will enable students
+to engage with current sociological literature that uses advanced methods and to apply these methods in their own work. The course assumes working knowledge of probability theory and statistical inference at the level of \textit{Social Statistics I}. Basic understanding of matrix algebra and calculus is preferred but not required. \texttt{R} will be used for data simulation and some problem sets, and \texttt{Python} will be supplemented in some ML and embedding methods.
+
+\subsection*{Expectations}
+
+\textbf{\textcolor{titlecolor}{Reading and participation (10\%)}}:\\
+You are expected to read required readings prior to the class in which they are discussed. If you do not understand the readings, please come prepared to discuss what you did and did not follow.
+
+\vspace{0.5em}
+
+\noindent \textbf{\textcolor{titlecolor}{Problem sets (30\%)}}:\\
+During the semester, there will be 5 problem sets. The problem sets are relatively short and will be assigned bi-weekly. They are used to enhance your understanding of the materials. Sometimes \texttt{R} coding is required. Problem sets will be released on Tuesdays immediately after class and are due two weeks later by Monday, 11:59PM.
+
+\vspace{0.5em}
+
+\noindent \textbf{\textcolor{titlecolor}{In-Class Midterm Exam (30\%)}}: \\
+There will be an in-class midterm on October 21. The exam is open book and open note, but will be timed. You will not be required to write any code for the midterm.
+
+\vspace{0.5em}
+
+\noindent \textbf{\textcolor{titlecolor}{Take-Home Final (30\%)}}: \\
+There will be a take-home exam administered on December 13, in lieu of the official exam schedule of the class. This exam is open note and open book, but you may not communicate with class members. There
+may be questions that require you to use \texttt{R} on the final. You are welcome to use your own data or project for certain coding assignments or replication projects. Further details will be announced later in the semester.
+
+\subsection*{Software}
+This class will use \texttt{R}, and prior experience at the level of \textit{Social Statistics I} is assumed. \texttt{Python} will be used as a supplementary tool in certain cases, such as for machine learning and embedding-based models.
+
+\subsection*{Use of Artificial Intelligence (AI)}
+While the use of AI is not permitted during the midterm exam, I encourage students to use AI tools to support their statistical learning, particularly for understanding the steps in statistical derivations. AI assistance is also permitted on problem sets and the take-home final, but students are expected to ensure that they fully understand each step in their solutions.
+
+\subsection*{Course Materials}
+
+We will use three textbooks frequently throughout the course:
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textcolor{titlecolor}{[CML]} Chernozhukov et al. 2025. \textit{Applied Causal Inference Powered by ML and AI}
+    \item \textcolor{titlecolor}{[ISL]} James et al. 2013. \textit{An Introduction to Statistical Learning: with Applications in R}.
+    \item \textcolor{titlecolor}{[MHE]} Angrist and Pischke 2009. \textit{Mostly Harmless Econometrics: An Empiricist's Companion}.
+\end{itemize}
+
+I recommend that you purchase these books if you like to have physical copies. You can digitally access the full text of \href{https://causalml-book.org/}{\textcolor{titlecolor}{CML}}, \href{https://www.dsecoaching.com/pdf/2008%20Angrist%20Pischke%20MostlyHarmlessEconometrics.pdf}{\textcolor{titlecolor}{MHE}}, and \href{https://www.statlearning.com/}{\textcolor{titlecolor}{ISL}} through the embedded hyperlinks. The following textbooks may also be useful for reference, particularly
+if you choose to delve further into topics covered in this course.
+
+\begin{itemize}[noitemsep]
+    \item \textcolor{titlecolor}{[CCI]} Winship and Morgan 2007. \textit{Counterfactuals and Causal Inference: Methods and Principles for Social Research}
+    \item \textcolor{titlecolor}{[CIS]}  Rubin and Imbens 2015. \textit{Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction}
+\end{itemize}
+
+\subsection*{Schedule}
+\input{syllabus/schedule}
+
+The schedule is still tentative as of \today. A detailed schedule of topics and readings, by class session, appears below. You are responsible for reading the \textit{required readings} lists prior to the class section.
+
+\vspace{1em}
+
+\noindent \textbf{\textcolor{titlecolor}{Aug 26: Introduction, Motivation, and Linear Regression}}
+
+\noindent Required readings
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item CML Preface and Chapter 1
+    \item MHE Chapter 3
+\end{itemize}
+\noindent Additional readings
+\begin{itemize}
+    \item ISL Chapter 2 and 3
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Sep 2: Machine Learning Basics}}
+
+\noindent Required readings
+\begin{itemize}
+    \item ISL Chapter 5 and 6
+    \item Molina Mario and Filiz Garip. 2019. ``Machine Learning for Sociology.'' \textit{Annual Review of Sociology, 45}(1), 27-45.
+\end{itemize}
+\noindent Additional readings
+\begin{itemize}
+    \item ISL Chapter 3
+    \item CML Chapter 3
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Sep 9: Machine Learning Advanced}}
+
+\noindent Required readings
+\begin{itemize}
+    \item ISL Chapter 8 and 10
+    \item Koch Bernard et al. 2025. ``A Primer on Deep Learning for Causal Inference.'' \textit{Sociological Methods \& Research, 54}(2), 397-447.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item CML Chapter 4
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Sep 16: Causal Inference Basics}}
+
+\noindent Required readings
+\begin{itemize}
+    \item MHE Chapter 2
+    \item CML Chapter 2 and 5
+    \item Lundberg Ian, Johnson Rebecca, and Stewart M. Brandon. 2021. ``What is Your Estimand? Defining the Target Quantity Connects Statistical Evidence to Theory.'' \textit{American Sociological Review}, \textit{86}(3), 532-565. 
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item CCL Chapter 3 and 4
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Sep 23: Causal Inference Advanced}}
+
+\noindent Required readings
+\begin{itemize}
+    \item CML Chapter 6 and 7
+    \item Winship Christopher and David J. Harding. 2008. ``A Mechanism-based Approach to the Identification of Age–Period–Cohort Models.'' \textit{Sociological Methods \& Research, 36}(3) 362-401.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Blau M. Peter and Otis Dudley Duncan. 1967. \textit{The American Occupational Structure}. Free Press. \textit{Chapter 5}: The Process of Stratification.
+    \item Vaisey Stephen and Andrew Miles. 2017. ``What You Can—and Can’t—Do with Three-wave Panel Data.'' \textit{Sociological Methods \& Research, 46}(1), 44-67.
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Sep 30: PSM and Doubly Robust Estimation}}
+
+\noindent Required readings
+\begin{itemize}
+    \item ISL Chapter 4
+    \item Funk M. Jonsson et al. 2011. ``Doubly Robust Estimation of Causal Effects.'' \textit{American Journal of Epidemiology, 173}(7), 761-767.
+    \item Sharkey Patrick and Felix Elwert. 2011. ``The Legacy of Disadvantage: Multi-generational Neighborhood Effects on Cognitive Ability.'' \textit{American Journal of Sociology, 116}(6), 1934-1981.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Breen Richard and Ermisch John. 2024. ``Using Inverse Probability Weighting to Address Post-Outcome Collider Bias. \textit{Sociological Methods \& Research, 53}(1), 5-27.
+    \item Bang Heejung and James M. Robins. 2005. ``Doubly Robust Estimation in Missing Data and Causal Inference Models.'' \textit{Biometrics}, \textit{61}(4), 962-973.
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Oct 7: Instrumental Variable Estimation}}
+
+\noindent Required readings
+\begin{itemize}
+    \item MHE Chapter 4
+    \item CML Chapter 12 and 13
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Harding J. David et al. 2018. ``Imprisonment and Labor Market Outcomes: Evidence from a Natural Experiment.'' \textit{American Journal of Sociology, 124}(1), 49-110.
+    \item Chyn Eric, Brigham Frandsen, and Emily Leslie. 2025. ``Examiner and Judge Designs in Economics: A Practitioner’s Guide.'' \textit{Journal of Economic Literature, 63}(2), 401-439.
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Oct 14: \textit{Fall Break}}}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Oct 21: In-class Midterm}}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Oct 28: Regression Discontinuity Design}}
+
+\noindent Required readings
+\begin{itemize}
+    \item MHE Chapter 6
+    \item CML Chapter 17
+    \item Cattaneo Matias and Rocio Titiunik. 2022. ``Regression Discontinuity Designs.'' \textit{Annual Review of Economics, 14}(1), 821-851.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Dell Melissa and Pablo Querubin. ``Nation Building Through Foreign Intervention: Evidence from Discontinuities in Military Strategies.'' \textit{The Quarterly Journal of Economics, 133}(2), 701-764.
+    \item Card David et al. 2017. ``Regression Kink Design: Theory and Practice.'' In \textit{Regression Discontinuity Designs: Theory and Applications}, 341-382.
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Nov 4: Panel Data and Difference-in-Difference}}
+
+\noindent Required readings
+\begin{itemize}
+    \item MHE Chapter 5
+    \item CML Chapter 16
+    \item Roth Jonathan et al. 2023. ``What’s Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature.'' \textit{Journal of Econometrics, 235}(2), 2218-2244.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Dafoe Allan. 2018. ``Nonparametric Identification of Causal Effects Under Temporal Dependence.'' \textit{Sociological Methods \& Research, 47}(2), 136-168.
+    \item Elwert Felix and Fabian T. Pfeffer. 2022. ``The Future Strikes Back: Using Future Treatments to Detect and Reduce Hidden Bias.'' \textit{Sociological Methods \& Research, 51}(3), 1014-1051.
+\end{itemize}
+
+\begin{comment}
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Nov 4: Synthetic Control and Event Studies}}
+
+\noindent Required readings
+\begin{itemize}
+    \item Abadie Alberto, Alexis Diamond, and Jens Hainmueller. 2010. ``Synthetic Control Methods for Comparative Case Studies: Estimating the Effect of California’s Tobacco Control Program.'' \textit{Journal of the American Statistical Association, 105}(490), 493-505.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Abadie Alberto. 2021. ``Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects.'' \textit{Journal of Economic Literature, 59}(2), 391-425.
+    \item Ben-Michael Eli, Avi Feller, and Jesse Rothstein. 2021. ``The Augmented Synthetic Control Method.'' \textit{Journal of the American Statistical Association, 116}(536), 1789-1803.
+    \item Finkelstein Amy et al. 2025. ``Lives Versus Livelihoods: The Impact of the Great Recession on Mortality and Welfare.'' \textit{The Quarterly Journal of Economics, 140}(3), 2269-2328.
+\end{itemize}
+\end{comment}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Nov 11: Heterogeneous Treatment Effect}}
+
+\noindent Required readings
+\begin{itemize}
+    \item CML Chapter 14
+    \item Brand Jennie et al. 2021. ``Uncovering Sociological Effect Heterogeneity Using Tree-based Machine Learning.'' \textit{Sociological Methodology, 51}(2), 189-223.
+    \item Künzel Sören et al. 2019. ``Metalearners for Estimating Heterogeneous Treatment Effects Using Machine Learning.'' \textit{Proceedings of the National Academy of Sciences, 116}(10), 4156-4165.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Daoud Adel and Fredrik D. Johansson. 2024. ``The Impact of Austerity on Children: Uncovering Effect Heterogeneity by Political, Economic, and Family Factors in Low-and Middle-Income Countries.'' \textit{Social Science Research, 118}, 102973.
+    \item Wager Stefan and Susan Athey. 2018. ``Estimation and Inference of Heterogeneous Treatment Effects Using Random Forests.'' \textit{Journal of the American Statistical Association, 113}(523), 1228-1242.
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Nov 18: Feature Engineering Using Unstructured Data}}
+
+\noindent Required readings
+\begin{itemize}
+    \item CML Chapter 10
+    \item Vaswani Ashish et al. 2017. ``Attention is All You Need.'' \textit{Advances in Neural Information Processing Systems, 30}.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Athey Susan et al. 2024. ``Labor-LLM: Language-based Occupational Representations with Large Language Models.'' \textit{arXiv preprint arXiv:2406.17972}.
+    \item Li He et al. 2025. ``Transformer-Based Spatial-Temporal Counterfactual Outcomes Estimation.'' \textit{arXiv preprint arXiv:2506.21154}.
+\end{itemize}
+
+\vspace{1em} \noindent \textbf{\textcolor{titlecolor}{Nov 25: Causal Reasoning in Machine Learning}}
+
+\noindent Required readings
+\begin{itemize}
+    \item Feder Amir et al. 2022. ``Causal Inference in Natural Language Processing: Estimation, Prediction, Interpretation and Beyond.'' \textit{Transactions of the Association for Computational Linguistics, 10}, 1138-1158.
+    \item Kosuke Imai and Kentaro Nakamura. 2024. ``Causal Representation Learning with Generative Artificial Intelligence: Application to Texts as Treatments.'' \textit{arXiv preprint arXiv:2410.00903}.
+\end{itemize}
+
+\noindent Additional readings
+\begin{itemize}
+    \item Kim Junsol and Byungkyu Lee. 2023. ``AI-augmented Surveys: Leveraging Large Language Models and Surveys for Opinion Prediction.'' \textit{arXiv preprint arXiv:2305. 09620}.
+\end{itemize}
+
+
+\end{document}

@@ -1,0 +1,203 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{mathpazo}
+\usepackage{newpxtext}
+\usepackage{newpxmath}
+\setlength{\jot}{10pt} %% change vertical spacing in equation
+\setlength{\parindent}{0pt}
+\usepackage[hang,flushmargin]{footmisc}
+
+%% colors in Duke's navy blue
+\definecolor{titlecolor}{RGB}{0,0,128}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=titlecolor,
+    urlcolor=titlecolor
+}
+
+%% itemize style
+\setlist[itemize]{noitemsep, topsep=2pt}
+
+%% section style
+\titleformat{\section}{\color{titlecolor}\normalfont\Large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{}{0em}{}
+\setlength{\parskip}{3pt}
+
+%% footer only (no top line)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\rfoot{\thepage}
+
+%% subsection font size
+\titleformat{\subsection}
+  {\normalfont\fontsize{13.5}{15}\selectfont\bfseries}{}{0em}{}
+
+\begin{document}
+
+%% title block
+\noindent {\Large \textcolor{titlecolor}{SOC 690S Machine Learning in Causal Inference \\[3pt] Week 1 Supplements}}\\[0pt]
+
+\subsection{Asympototic OLS Inference}
+
+We are interested in the distribution of the sample analog of 
+\begin{align*}
+    \beta &= E[X_iX_i']^{-1}E[X_iY_i] \\
+    \text{where } X_i &=
+    \begin{bmatrix}
+    X_{i1} \\
+    X_{i2} \\
+    \vdots \\
+    X_{ip}
+    \end{bmatrix}
+    \in \mathbb{R}^{p\times 1} \hspace{3pt} 
+    \text{and } Y_i \text{ is a } \textit{scalar}
+\end{align*}
+
+Suppose $[Y_i X_i']'$ is \textit{independently and identically distributed} in a sample of size $n$. The OLS estimator is given by
+\begin{align*}
+    \hat{\beta} &= \left[\sum_i X_i X_i' \right]^{-1} \sum_i X_i Y_i
+\end{align*}
+
+Given $Y_i = X_i'\beta + e_i$\footnote{Note here $Y_i$ and $X_i$ are from the sample. However, we use the \textit{population parameter} $\beta$ to express the relation, which retains the property that $E[X_ie_i]=0$. This holds as $e_i$ does not have a meaning on its own, but is a derivative of $\beta = E[X_iX_i']^{-1}E[X_iY_i]$ and $e_i=Y_i - X_i'\beta$.}
+\begin{align*}
+    \hat{\beta} &= \left[\sum_i X_i X_i' \right]^{-1} \sum_i X_i \left( X_i'\beta + e_i \right) \\
+    &= \beta + \left[\sum_i X_i X_i' \right]^{-1} \sum_i X_ie_i
+\end{align*}
+
+Under standard regularity $E||X_i||^2 < \infty$, $E\left[e_i^2||X_i||^2\right] < \infty$, and $E[X_iX_i']$ exists and is positive definite and invertible ($E[X_iX_i'] \succ 0$)
+\begin{align*}
+    \sqrt{n}(\hat{\beta}-\beta) \xrightarrow{d} \mathcal{N}\left( 0, E[X_iX_i']^{-1}E[e_i^2 X_i X_i'] E[X_iX_i']^{-1} \right)
+\end{align*}
+To show this is the case, we express
+\begin{align*}
+    \hat{\beta} - \beta = \left( \frac{1}{n} \sum_i X_i'X_i \right)^{-1} \left(\frac{1}{n} \sum_i X_ie_i \right)
+\end{align*}
+Here $X_ie_i \in \mathbb{R}^{p\times 1}$. The variance of the sampling distribution of $X_ie_i$, when $n \rightarrow \infty$, according to the \textit{Central Limit Theorem}, is given by\footnote{We have $\sqrt{n}$ to get a non-degenerate limit distribution. If we do not multiply by $\sqrt{n}$, the variance will converge to 0 at rate $\frac{1}{n}$ as $n \rightarrow \infty$.}
+$$
+\sqrt{n}\left(\frac{1}{n}\sum_iX_ie_i\right) \xrightarrow{d} \mathcal{N}(0,E[e_i^2X_iX_i'])
+$$
+To show this, note the variance of a vector is a variance-covariance matrix
+\begin{align*}
+    V(X_ie_i) &= E[(X_ie_i - E[X_ie_i])(X_ie_i - E[X_ie_i])'] \\
+    &= E[X_ie_i (X_ie_i)'] - E[X_ie_i]E[X_ie_i]' \\
+    &= E[e_i^2X_iX_i']
+\end{align*}
+By \textit{Law of Large Numbers}, we have 
+$$\frac{1}{n} \sum_i X_i'X_i \xrightarrow{p}E[X_i'X_i]$$
+By \textit{Slutsky's Theorem} and the \textit{Continuous Mapping Theorem}\footnote{This expansion may not be obvious if you are not familiar with matrix operation. Suppose $Z\in\mathbb{R}^p$ is a \textit{random} vector and $A\in\mathbb{R}^{p\times p}$ is a \textit{fixed} matrix—the same setup as the two factors we have. By definition, $V(AZ) = E[(AZ-E[AZ])(AZ-E[AZ])'] = E(AZ-AE[Z])(AZ - AE[Z])'] = E[A(Z-E[Z])(Z-E[Z])'A'] = E[AV(Z)A']$.} 
+\begin{align*}
+    \sqrt{n}\left( \frac{1}{n} \sum_i X_i'X_i \right)^{-1} \left(\frac{1}{n} \sum_i X_ie_i \right) \xrightarrow{d} \mathcal{N}\left(0,E[X_iX_i']^{-1}E[e_i^2 X_i X_i'] E[X_iX_i']^{-1}\right)
+\end{align*}
+The consistent \textit{sample} ``sandwich'' estimator (Eicker-Huber-White) is then given by
+\begin{align*}
+    \hat{V}(\hat{\beta}) = (X_i'X_i)^{-1}\left( \sum_i^{n} X_iX_i'\hat{e}_i^{2} \right) (X_i'X_i)^{-1}
+\end{align*}
+This is also known as heteroskedasticity-consistent standard errors. This is, however, not the standard error you get by default from packaged software. Default standard errors are derived under a homoskedasticity assumption $E[e_i^2|X_i]=\sigma^2$. Given the assumption, we have the ``meat''
+\begin{align*}
+    E[e_i^2X_iX_i'] = E[E[e_i^2X_iX_i' | X_i]] = \sigma^2E[X_iX_i']
+\end{align*}
+Accordingly, 
+\begin{align*}
+    E[X_iX_i']^{-1}E[e_i^2 X_i X_i'] E[X_iX_i']^{-1} &= \sigma^2 E[X_iX_i']^{-1}E[X_i X_i'] E[X_iX_i']^{-1} \\
+    &= \sigma^2E[X_iX_i']^{-1}
+\end{align*}
+
+\newpage
+\subsection{Delta Method}
+
+The heteroskedasticity-consistent standard errors can also be derived from the Delta Method. To introduce the method, suppose we have an estimator $\hat{\theta}$ for a parameter $\theta$. We often want the distribution of a function of the estimator $g(\hat{\theta})$.
+
+Suppose the standard CLT holds,
+\begin{align*}
+    \sqrt{n}(\hat{\theta} - \theta) \xrightarrow{d} \mathcal{N}(0,\sigma^2)
+\end{align*}
+Take a first-order Taylor expansion of $g$ around $\theta$,
+\begin{align*}
+    g(\hat{\theta}) &\approx g(\theta) + g'(\theta)(\hat{\theta}-\theta) \\
+    \sqrt{n}(g(\hat{\theta}) - g(\theta)) &\approx g'(\theta)\sqrt{n}(\hat{\theta}-\theta) \xrightarrow{d} \mathcal{N}(0,(g'(\theta))^2\sigma^2)
+\end{align*}
+We now expand the case to the multivariate matrix space. Suppose now $\hat{\theta} \in \mathbb{R}^{p}$, and the standard CLT holds
+$$
+\sqrt{n}(\hat{\theta} - \theta) \xrightarrow{d} \mathcal{N}(0,\Omega)
+$$
+For a smooth function $g: \mathbb{R}^{p} \rightarrow \mathbb{R}$, with gradient $\nabla g(\theta) \in \mathbb{R}^p$
+$$
+\sqrt{n}(\hat{\theta} - \theta) \xrightarrow{d} \mathcal{N}(0, \nabla g(\theta)' \Omega \nabla g(\theta))
+$$
+If $g: \mathbb{R}^{p} \rightarrow \mathbb{R}^k$, it generalizes to
+$$
+\sqrt{n}(\hat{\theta} - \theta) \xrightarrow{d} \mathcal{N}(0, G \Omega G')
+$$
+where $G \in \mathbb{R}^{k \times p}$ is the Jacobian matrix of $g$ at $\theta$.
+
+In the general OLS version, $g$ maps $\mathbb{R}^{p} \rightarrow \mathbb{R}^p$
+\[
+g(\beta) \;=\;
+\begin{bmatrix}
+E\big[X_{i1}\big(Y_i - \beta_{1}X_{i1} - \cdots - \beta_{p}X_{ip}\big)\big] \\[6pt]
+E\big[X_{i2}\big(Y_i - \beta_{1}X_{i1} - \cdots - \beta_{p}X_{ip}\big)\big] \\[6pt]
+\vdots \\[6pt]
+E\big[X_{ip}\big(Y_i - \beta_{1}X_{i1} - \cdots - \beta_{p}X_{ip}\big)\big]
+\end{bmatrix}
+\]
+Its Jacobian is 
+\begin{align*}
+G(\beta) &= 
+-\begin{bmatrix}
+E[X_{i1}^2] & E[X_{i1}X_{i2}] & \cdots & E[X_{i1}X_{ip}] \\
+E[X_{i2}X_{i1}] & E[X_{i2}^2] & \cdots & E[X_{i2}X_{ip}] \\
+\vdots & \vdots & \ddots & \vdots \\
+E[X_{ip}X_{i1}] & E[X_{ip}X_{i2}] & \cdots & E[X_{ip}^2]
+\end{bmatrix} \\
+&= -\,E[X_iX_i']
+\end{align*}
+For the sample moment (normal equation)
+\begin{align*}
+g_n(\beta) := \frac{1}{n}\sum_{i=1}^{n}X_i(Y_i-X_i'\beta)
+\end{align*}
+OLS solves $g_n(\hat{\beta})=0$.
+Expanding $g_n$ at $\beta$ gives
+\begin{align*}
+0 &= g_n(\beta) \approx g_n(\beta) + (\hat{\beta} - \beta) \\
+\hat{\beta} - \beta &\approx -G(\beta)^{-1}  g_n(\beta) \\
+\sqrt{n} (\hat{\beta} - \beta) &\approx -G(\beta)^{-1}  \sqrt{n} g_n(\beta) \\
+&\approx -G(\beta)^{-1}  \sqrt{n} \frac{1}{n} \sum_i X_ie_i \\
+&\xrightarrow{d} \mathcal{N}(0, G(\beta)^{-1} E[e_i^2X_iX_i'] G(\beta)^{-1}) \\
+&\xrightarrow{d} \mathcal{N}\left( 0, E[X_iX_i']^{-1}E[e_i^2 X_i X_i'] E[X_iX_i']^{-1} \right)
+\end{align*}
+
+\subsection{What Fails When $p/n$ is Not Small}
+
+Theorem 1.2.1 on page 19 of \textcolor{titlecolor}{CML} establishes the fact that the \textit{prediction} error of OLS as measured by RMSE grows at rate $\sqrt{p/n}$. Indeed, when $p/n$ is not small, the OLS \textit{inference}—the standard errors and confidence intervals for $\hat{\beta}$—also becomes inconsistent. The last chapter of \textcolor{titlecolor}{MHE} discusses the issue in detail, and here I give the intuition.
+
+Remember the sample sandwich estimator
+\begin{align*}
+    \hat{V}(\hat{\beta}) = (X'X)^{-1}\left( \sum_i^{n} X_iX_i'\hat{e_i}^2 \right) (X'X)^{-1}
+\end{align*}
+is consistent when $p/n \rightarrow 0$, as LLN states that
+$$\frac{1}{n} \sum_i X_i'X_i \xrightarrow{p}E[X_i'X_i]$$
+and CLT ensures
+$$
+\sum_i^{n} X_iX_i'\hat{e_i}^2 \xrightarrow{d} E[e_i^2 X_i X_i']
+$$
+However, when $p/n \rightarrow c > 0$, the \textit{operator norm error}\footnote{The operator norm error measures the largest possible distortion of a quadratic form caused by replacing the population Gram matrix $E[X_iX_i']$ with the sample Gram $\tfrac{1}{n}X_i'X_i$.} no longer vanishes, but grows at rate of $\sqrt{p/n}$
+$$
+\Big\|\tfrac{1}{n}X_i'X_i - E[X_iX_i']\Big\|_{\mathrm{op}}
+= \sup_{\|v\|_2=1} \left|\,v'\Big(\tfrac{1}{n}X_i'X_i - E[X_iX_i']\Big)v\,\right| \sim \mathcal{O}_p(\sqrt{\frac{p}{n}})
+$$
+The intuition is that each entry of $\tfrac{1}{n}X_i'X_i$ still satisfies LLN; however there are $p \times p$ entries. Ensuring all of them to be consistent is much harder, and the LLN fails in operator norm. 
+
+In this case, using sandwich standard errors always give underestimated true standard errors (or true sampling variability of $\hat{\beta}$). This failure in statistical \textit{inference} in high-dimensional data is another motivation of introducing Machine Learning in statistical modeling and causal inference.
+\end{document}
