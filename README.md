@@ -4,7 +4,8 @@
 
 ---
 
-## Week 1 · Introduction, Motivation, and Linear Regression
+<details>
+  <summary><h2>Week 1 · Introduction, Motivation, and Linear Regression</h2></summary>
 
 This week sets the stage for the course and introduces how *Machine Learning (ML)* can be integrated into *Causal Inference*.
 
@@ -21,4 +22,5 @@ This week sets the stage for the course and introduces how *Machine Learning (ML
 
 > **Optional Reading:** For students who wish to dive deeper, see the *Week 1 Supplements* on asymptotic OLS inference.
 
+</details>
 ---
