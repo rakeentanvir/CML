@@ -16,8 +16,8 @@ This week sets the stage for the course and introduces how *Machine Learning (ML
 - Summarize the concept of *Neyman Orthogonality* as an extension of the FWL Theorem.
 
 ### Materials
--[Slides: Week 1 Introduction](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Slides.pdf)  
--[Supplements: Asymptotic OLS Inference](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Supplements.pdf)
+- [Slides: Week 1 Introduction](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Slides.pdf)  
+- [Supplements: Asymptotic OLS Inference](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Supplements.pdf)
 
 > **Optional Reading:** For students who wish to dive deeper, see the *Week 1 Supplements* on asymptotic OLS inference.
 
