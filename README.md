@@ -10,18 +10,18 @@
 This week sets the stage for the course and introduces how and *why* Machine Learning (ML) can be integrated into causal inference. 
 
 ### Roadmap
-- Motivate the integration of statistical prediction with causal inference by the emergence of high-dimensional data and flexible, non-linear modelling of the covariates.
-- Review statistical properties of Conditional Expectation Function (CEF) and Linear Regression in *low-dimensional space*.
-    + Basic matrix-based expression of linear regression is reviewed
-- Introduce the *Frisch–Waugh–Lovell Theorem* (FWL) in linear regression as a *partialling out* technique.
-- Review basic asymptotic OLS inference and identify issues in standard error estimation in *high-dimensional space*.
-- Summarize the concept of *Neyman Orthogonality* as an extension of the FWL Theorem to motivate *Double Machine Learning* (DML) in *high-dimensional space*.
+- Motivate the integration of statistical prediction with causal inference in response to the emergence of high-dimensional data and the need for flexible, non-linear modeling of covariates.
+- Review the statistical properties of the Conditional Expectation Function (CEF) and linear regression in a low-dimensional setting.  
+  + The basic matrix formulation of linear regression is revisited.  
+- Introduce the Frisch–Waugh–Lovell (FWL) Theorem as a partialling-out technique in linear regression.  
+- Review asymptotic OLS inference and discuss issues with standard error estimation in high-dimensional settings.  
+- Summarize the concept of *Neyman Orthogonality* as an extension of the FWL Theorem to motivate Double Machine Learning (DML) in high-dimensional settings.  
 
 ### Materials
 - [Slides: Week 1 Introduction](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Slides.pdf)  
-- [Supplements: Asymptotic OLS Inference](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Supplements.pdf)
+- [Supplements: Asymptotic OLS Inference](./Week%201%20Motivation%20and%20Linear%20Regression/Week%201%20Supplements.pdf)  
 
-> **Optional Reading:** For students who wish to dive deeper in the asympototic properties of OLS, see the *Week 1 Supplements* on asymptotic inference.
+> **Optional Reading:** For students who wish to explore the asymptotic properties of OLS in greater depth, see the *Week 1 Supplements* on asymptotic inference. Models that satisfy *Neyman Orthogonality* retain the classic asymptotic properties required for valid statistical inference.
 
 ---
 </details>
