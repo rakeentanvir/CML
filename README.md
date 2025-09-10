@@ -1,9 +1,3 @@
-<style>
-details summary::-webkit-details-marker { display: none; }
-details summary::before { content: "+ "; }
-details[open] summary::before { content: "− "; }
-</style>
-
 <h1 align="center">SOCIOL 690S: Machine Learning in Causal Inference</h1>
 
 <p align="center"><b> Taught by <a href="https://wenhaojiangsoc.github.io">Wenhao Jiang</a> · Department of Sociology · Duke University · Fall 2025 </b></p>
