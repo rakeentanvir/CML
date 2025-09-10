@@ -67,6 +67,6 @@ Building on Week 2, where we introduced linear regularization methods to address
   
 ### Materials
 - [Slides: Week 3 Machine Learning Advanced](./Week%203%20Machine%20Learning%20Advanced/Week%203%20Slides.pdf)  
-- [R Code: Fit ML Models Methods](./Week%202%20Machine%20Learning%20Advanced/fitML.pdf)
+- [R Code: Fit ML Models](./Week%203%20Machine%20Learning%20Advanced/fitML.pdf)
 ---
 </details>
