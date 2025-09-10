@@ -1,3 +1,9 @@
+<style>
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "+ "; }
+details[open] summary::before { content: "− "; }
+</style>
+
 <h1 align="center">SOCIOL 690S: Machine Learning in Causal Inference</h1>
 
 <p align="center"><b> Taught by <a href="https://wenhaojiangsoc.github.io">Wenhao Jiang</a> · Department of Sociology · Duke University · Fall 2025 </b></p>
@@ -44,5 +50,23 @@ Building on Week 1, where we introduced both the benefits and the challenges of 
 - [R Code: Regularization Methods](./Week%202%20Machine%20Learning%20Basics/regularization.pdf)  
 - [R Code: Double LASSO and the Convergence Hypothesis](./Week%202%20Machine%20Learning%20Basics/doubleLASSO.pdf)  
 
+---
+</details>
+
+
+<details>
+  <summary><h2>Week 3 Machine Learning Advanced</h2></summary>
+  
+Building on Week 2, where we introduced linear regularization methods to address high-dimensional data, this week we turn to non-linear models in Machine Learning. These approaches are designed to capture flexible and complex relationships among covariates. Our focus will be on two broad classes: Tree-based Methods and Neural Networks, along with their key variants.
+
+### Roadmap
+
+- Formally introduce the concept of the bias-variance tradeoff and explain its role in tuning Machine Learning models.
+- Present classic Tree-based Methods, including Regression Trees, Bagging, Random Forests, and Boosted Trees, showing how each builds on the bias-variance tradeoff.
+-Introduce the foundational Neural Network framework and discuss the theoretical background of training a Neural Network model.
+  
+### Materials
+- [Slides: Week 3 Machine Learning Advanced](./Week%203%20Machine%20Learning%20Advanced/Week%203%20Slides.pdf)  
+- [R Code: Fit ML Models Methods](./Week%202%20Machine%20Learning%20Advanced/fitML.pdf)
 ---
 </details>
