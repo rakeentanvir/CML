@@ -57,7 +57,7 @@ Building on Week 2, where we introduced linear regularization methods to address
 
 - Formally introduce the concept of the bias-variance tradeoff and explain its role in tuning Machine Learning models.
 - Present classic Tree-based Methods, including Regression Trees, Bagging, Random Forests, and Boosted Trees, showing how each builds on the bias-variance tradeoff.
--Introduce the foundational Neural Network framework and discuss the theoretical background of training a Neural Network model.
+- Introduce the foundational Neural Network framework and discuss the theoretical background of training a Neural Network model.
   
 ### Materials
 - [Slides: Week 3 Machine Learning Advanced](./Week%203%20Machine%20Learning%20Advanced/Week%203%20Slides.pdf)  
