@@ -64,3 +64,22 @@ Building on Week 2, where we introduced linear regularization methods to address
 - [R Code: Fit ML Models](./Week%203%20Machine%20Learning%20Advanced/fitML.pdf)
 ---
 </details>
+
+<details>
+  <summary><h2>Week 4 Neyman Orthogonality and Potential Outcome Framework</h2></summary>
+
+Building on the Machine Learning methods introduced in the last two weeks, this week we focus on the Double Machine Learning (DML) approach in partial linear regression, where covariates may be high-dimensional. We formally justify DML using the concept of *Neyman Orthogonality*, a framework that ensures consistent estimation of the treatment effect even when nuisance functions are estimated with ML. We then connect DML to the potential outcomes framework in causal inference, introducing the key assumption of conditional ignorability, which links regression-based estimation to causal interpretation.
+
+### Roadmap
+
+- Formally introduce *Neyman Orthogonality* and explain why orthogonality is key to making ML-based nuisance estimates usable for valid inference in Double Machine Learning (DML)
+
+- Connect DML to the partial linear regression model with high-dimensional covariates. We explain the importance of hyperparameter tuning and *cross-fitting* in DML and demonstrate the technique based on the high-dimensional data we used to test the Convergence Hypothesis.
+
+- Link DML to the potential outcomes framework and *conditional ignorability*. We highlight how the regression-based approach ties to causal interpretation under ignorability.  
+
+### Materials
+- [Slides: Week 3 Machine Learning Advanced](./Week%204%20Neyman%20Orthogonality%20and%20Causal%20Inference%20Basics/Week%204%20Slides.pdf)  
+- [R Code: Fit ML Models](./Week%204%20Neyman%20Orthogonality%20and%20Causal%20Inference%20Basics/doubleML.pdf)
+---
+</details>
