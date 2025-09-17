@@ -79,7 +79,7 @@ Building on the Machine Learning methods introduced in the last two weeks, this 
 - Link DML to the potential outcomes framework and *conditional ignorability*. We highlight how the regression-based approach ties to causal interpretation under ignorability.  
 
 ### Materials
-- [Slides: Week 3 Machine Learning Advanced](./Week%204%20Neyman%20Orthogonality%20and%20Causal%20Inference%20Basics/Week%204%20Slides.pdf)  
-- [R Code: Fit ML Models](./Week%204%20Neyman%20Orthogonality%20and%20Causal%20Inference%20Basics/doubleML.pdf)
+- [Slides: Week 4 Neyman Orthogonality and Causal Inference Basics](./Week%204%20Neyman%20Orthogonality%20and%20Causal%20Inference%20Basics/Week%204%20Slides.pdf)  
+- [R Code: Fit Double ML Models](./Week%204%20Neyman%20Orthogonality%20and%20Causal%20Inference%20Basics/doubleML.pdf)
 ---
 </details>
