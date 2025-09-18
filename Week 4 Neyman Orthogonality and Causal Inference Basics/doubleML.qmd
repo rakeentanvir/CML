@@ -1,5 +1,5 @@
 ---
-title: "Week 3: Fit a Simple Noiseless Function Using ML Methods"
+title: "Week 4: Double Machine Learning Using Random Forest"
 format: pdf
 editor: visual
 ---
