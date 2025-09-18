@@ -41,8 +41,6 @@ x <- growth[-which(colnames(growth) %in% c("Outcome", "intercept", "gdpsh465"))]
 d <- growth$gdpsh465
 ```
 
-The sample contains $90$ countries and $63$ controls. With $p \approx 60$ and $n=90$, $p/n$ is not small. We expect the least squares method to provide a poor estimate of $\beta_1$. We expect the method based on partialling-out with Lasso to provide a high quality estimate of $\beta_1$. To check this hypothesis, we analyze the relation between the output variable $Y$ and the other country's characteristics by running a linear regression in the first step.
-
 ## Unpenalized Linear Regression
 
 ```{r OLS, warning=FALSE}
