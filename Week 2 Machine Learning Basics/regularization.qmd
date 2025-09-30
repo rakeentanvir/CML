@@ -1,0 +1,495 @@
+---
+title: "Week 2 Different Regularization Methods"
+format: pdf
+editor: visual
+---
+
+```{r load package, warning=FALSE, message=FALSE}
+library(hdm)
+library(xtable)
+library(glmnet)
+library(ggplot2)
+library(dplyr)
+library(ggpubr)
+```
+
+# Model Setup with Different Data Generating Process
+
+```{r model setup, warning=FALSE}
+## here three types of DGP, sparse, dense, and sparse and dense, are included
+gen_data <- function(n, p, regime = "sparse") {
+  
+  ## constants chosen to get R^2 of approximately .80
+  if (regime == "sparse") {
+    beta <- (1 / seq(1:p)^2) * 7
+  } else if (regime == "dense") {
+    beta <- rnorm(p) * 0.2
+  } else if (regime == "sparsedense") {
+    beta_1 <- (1 / seq(1:p)^2) * 6.5
+    beta_2 <- rnorm(p, 0, 0.5) * 0.7
+    beta <- beta_1 + beta_2
+  }
+  
+  ## true CEF
+  true_fn <- function(x) {
+    x[, seq_len(dim(x)[2])] %*% beta
+  }
+  
+  ## generate variables
+  X <- matrix(runif(n * p, min = -0.5, max = 0.5), n, p)
+  gX <- true_fn(X)
+  y <- gX + rnorm(n)
+  
+  Xtest <- matrix(runif(n * p, min = -0.5, max = 0.5), n, p)
+  gXtest <- true_fn(Xtest)
+  ytest <- gXtest + rnorm(n)
+  
+  Xpop <- matrix(runif(100000 * p, min = -0.5, max = 0.5), 100000, p)
+  gXpop <- true_fn(Xpop)
+  ypop <- gXpop + rnorm(100000)
+  
+  return(list(
+    X = X, y = y, gX = gX, Xtest = Xtest, ytest = ytest, gXtest = gXtest,
+    Xpop = Xpop, ypop = ypop, gXpop = gXpop, beta = beta
+  ))
+}
+```
+
+## LASSO Regression in Approximately Sparse Setting
+
+```{r approximate sparsity, warning=FALSE}
+
+## set up the basic parameters
+set.seed(1)
+n <- 100
+p <- 400
+res <- gen_data(n, p, regime = "sparse")
+X <- res$X
+y <- res$y
+betas <- res$beta
+
+## plot betas
+ggplot(data.frame(
+  beta = seq_along(betas),
+  magnitude = abs(betas)),
+       aes(x = beta, y = magnitude)) +
+  geom_line(linetype = "solid", color = "blue3",lwd=0.4) +
+  geom_point(shape = 21, size = 2, stroke = 0.6,
+             color = "blue3", fill = "white") +
+  # scale_y_log10() +   # equivalent to log = "y"
+  xlim(1,20) +
+  labs(
+    x = "j",
+    y = "j-th largest coefficient"
+  ) +
+  theme_bw() +
+  theme(text = element_text(family="Palatino"),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.line = element_blank(),
+        axis.text.y = element_text(size=10),
+        axis.text.x = element_text(size=10),
+        axis.title = element_text(size=12))
+
+## save the figure
+## ggsave("Figure 3.1.jpg", dpi=400,width=11,height=7,units = "cm")
+```
+
+```{r fit LASSO and Post-LASSO, warning=FALSE}
+
+## fit Lasso with penalty level determined by CV
+fit_lasso_cv <- cv.glmnet(X, y, family = "gaussian", 
+                          alpha = 1, nfolds = 5)
+lasso_betas <- as.numeric(coef(fit_lasso_cv, s = "lambda.min")[,1]) ## cv.glmnet() identifies lambda.min as the specific \lambda value that results in the smallest mean cross-validated error
+
+## plot
+ggplot(rbind(
+  data.frame(
+  beta = seq_along(betas),
+  magnitude = abs(betas),
+  type = "unpenalized"),
+  data.frame(
+  beta = seq_along(lasso_betas),
+  magnitude = sort(abs(lasso_betas),decreasing = TRUE),
+  type = "LASSO penalized")
+  ),
+       aes(x = beta, y = magnitude, color=type)) +
+  geom_line(linetype = "solid", lwd=0.4) +
+  geom_point(shape = 21, size = 2, stroke = 0.6, fill = "white") +
+  scale_color_manual(values = c("unpenalized" = "blue3",
+                                "LASSO penalized" = "red3")) +
+  xlim(1,20) +
+  labs(
+    x = "j",
+    y = "j-th largest coefficient"
+  ) +
+  theme_bw() +
+  theme(text = element_text(family="Palatino"),
+        legend.title=element_blank(),
+        legend.position = "bottom",
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.line = element_blank(),
+        axis.text.y = element_text(size=10),
+        axis.text.x = element_text(size=10),
+        axis.title = element_text(size=12),
+        legend.text=element_text(size=12))
+ggsave("Figure 3.2.jpg", dpi=400,width=11,height=8.5,units = "cm")
+
+## post-Lasso OLS (incorrect but handy)
+postlasso_coef <- as.numeric(summary(lm(y~X[,which(lasso_betas!=0)]))$coef[2:7,1])
+
+## plot
+ggplot(rbind(
+  data.frame(
+  beta = seq_along(betas),
+  magnitude = abs(betas),
+  type = "unpenalized"),
+  data.frame(
+  beta = seq_along(lasso_betas),
+  magnitude = sort(abs(lasso_betas),decreasing = TRUE),
+  type = "LASSO penalized"),
+  data.frame(
+  beta = seq_along(as.numeric(summary(lm(y~X[,which(lasso_betas!=0)]))$coef[2:7,1])),
+  magnitude = sort(abs(as.numeric(summary(lm(y~X[,which(lasso_betas!=0)]))$coef[2:7,1])),decreasing = TRUE),
+  type = "post-LASSO regression")
+  ),
+       aes(x = beta, y = magnitude, color=type)) +
+  geom_line(linetype = "solid", lwd=0.4) +
+  geom_point(shape = 21, size = 2, stroke = 0.6, fill = "white") +
+  scale_color_manual(values = c("unpenalized" = "blue3",
+                                "LASSO penalized" = "red3",
+                                "post-LASSO regression" = "green4")) +
+  xlim(1,20) +
+  labs(
+    x = "j",
+    y = "j-th largest coefficient"
+  ) +
+  theme_bw() +
+  theme(text = element_text(family="Palatino"),
+        legend.title=element_blank(),
+        legend.position = "bottom",
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.line = element_blank(),
+        axis.text.y = element_text(size=10),
+        axis.text.x = element_text(size=10),
+        axis.title = element_text(size=12),
+        legend.text=element_text(size=12)) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+## ggsave("Figure 3.3.jpg", dpi=400,width=11,height=9.3,units = "cm")
+```
+
+```{r other regularization, warning=FALSE}
+## I also fit Ridge, Elastic Net, LASSO based on plug-in penalty, and default (correct) post-LASSO method
+## family gaussian means that we'll be using square loss
+fit_ridge <- cv.glmnet(X, y, family = "gaussian", alpha = 0, nfolds = 5)
+fit_elnet <- cv.glmnet(X, y, family = "gaussian", alpha = .5, nfolds = 5)
+fit_rlasso <- hdm::rlasso(y ~ X, post = FALSE) ## LASSO with plug-in penalty level
+fit_rlasso_post <- hdm::rlasso(y ~ X, post = TRUE) ## post-LASSO with plug-in penalty level
+```
+
+```{r, warning=FALSE, include=FALSE}
+
+## define function to compute lava estimator. Doing an iterative scheme with fixed
+## number of iteration. Could iterate until a convergence criterion is met.
+lava_predict <- function(X, Y, newX, lambda1, lambda2, iter = 5) {
+
+  # Need to demean internally
+  dy <- Y - mean(Y)
+  dx <- scale(X, scale = FALSE)
+
+  sp1 <- glmnet::glmnet(dx, dy, lambda = lambda1) # lasso step fits "sparse part"
+  de1 <- glmnet::glmnet(dx, dy - predict(sp1, newx = dx), alpha = 0, lambda = lambda2)
+
+  i <- 1
+  while (i <= iter) {
+    sp1 <- glmnet::glmnet(dx, dy - predict(de1, newx = dx, s = "lambda.min"), lambda = lambda1)
+    de1 <- glmnet::glmnet(dx, dy - predict(sp1, newx = dx, s = "lambda.min"), alpha = 0, lambda = lambda2)
+    i <- i + 1
+  }
+
+  bhat <- sp1$beta + de1$beta
+  a0 <- mean(Y) - sum(colMeans(X) * bhat)
+
+  # Need to add intercept to output
+
+  yhat <- newX %*% bhat + a0
+
+  return(yhat)
+}
+
+# define function to get predictions and r2 scores for lava estimator
+
+lava_yhat_r2 <- function(xtr_mod, xte_mod, ytr, yte, num_folds = 5) {
+  # 5-fold CV. glmnet does cross-validation internally and
+  # relatively efficiently. We're going to write out all the steps to make sure
+  # we're using the same CV folds across all procedures in a transparent way and
+  # to keep the overall structure clear as well.
+
+  # Setup for brute force K-Fold CV
+  n <- length(ytr)
+  Kf <- num_folds # Number of folds
+  sampleframe <- rep(1:Kf, ceiling(n / Kf))
+  cvgroup <- sample(sampleframe, size = n, replace = FALSE) # CV groups
+
+
+  ## ------------------------------------------------------------
+  # We're going to take a shortcut and use the range of lambda values that come out
+  # of the default implementation in glmnet for everything. Could do better here - maybe
+
+  ## Fit ridge on grid of lambda values (chosen by default using glmnet) using basic model.
+  ridge_mod <- glmnet::glmnet(xtr_mod, ytr, alpha = 0) # alpha = 0 gives ridge
+  ridge_lambda <- ridge_mod$lambda # values of penalty parameter
+
+  ## Fit lasso on grid of lambda values (chosen by default using glmnet) using basic model.
+  lasso_mod <- glmnet::glmnet(xtr_mod, ytr) # default is lasso (equivalent to alpha = 1)
+  lasso_lambda <- lasso_mod$lambda # values of penalty parameter
+
+  ## ------------------------------------------------------------
+
+
+  # Lava - Using a double loop over candidate penalty parameter values.
+
+  lambda1_lava_mod <- lasso_mod$lambda[seq(5, length(lasso_lambda), 10)]
+  lambda2_lava_mod <- ridge_mod$lambda[seq(5, length(ridge_lambda), 10)]
+
+  cv_mod_lava <- matrix(0, length(lambda1_lava_mod), length(lambda2_lava_mod))
+
+  for (k in 1:Kf) {
+    indk <- cvgroup == k
+
+    k_xtr_mod <- xtr_mod[!indk, ]
+    k_ytr <- ytr[!indk]
+    k_xte_mod <- xtr_mod[indk, ]
+    k_yte <- ytr[indk]
+
+    for (ii in seq_along(lambda1_lava_mod)) {
+      for (jj in seq_along(lambda2_lava_mod)) {
+        cv_mod_lava[ii, jj] <- cv_mod_lava[ii, jj] +
+          sum((k_yte - lava_predict(k_xtr_mod, k_ytr,
+                                    newX = k_xte_mod,
+                                    lambda1 = lambda1_lava_mod[ii],
+                                    lambda2 = lambda2_lava_mod[jj]))^2)
+      }
+    }
+  }
+
+  # Get CV min values of tuning parameters
+  cvmin_lava_mod <- which(cv_mod_lava == min(cv_mod_lava), arr.ind = TRUE)
+  cvlambda1_lava_mod <- lambda1_lava_mod[cvmin_lava_mod[1]]
+  cvlambda2_lava_mod <- lambda2_lava_mod[cvmin_lava_mod[2]]
+
+  cat("Min Lava Lasso CV Penalty: ", cvlambda1_lava_mod)
+  cat("\nMin Lava Ridge CV Penalty: ", cvlambda2_lava_mod)
+
+
+  #### Look at performance on test sample
+
+  # Calculate R^2 in training data and in validation data as measures
+  # Refit on entire training sample
+
+
+  #### CV-min model
+
+  # In sample fit
+  cvmin_yhat_lava_tr <- lava_predict(xtr_mod, ytr,
+    newX = xtr_mod,
+    lambda1 = cvlambda1_lava_mod,
+    lambda2 = cvlambda2_lava_mod
+  )
+  r2_lava_mod <- 1 - sum((ytr - cvmin_yhat_lava_tr)^2) / sum((ytr - mean(ytr))^2)
+
+  # Out of sample fit
+  cvmin_yhat_lava_test <- lava_predict(xtr_mod, ytr,
+    newX = xte_mod,
+    lambda1 = cvlambda1_lava_mod,
+    lambda2 = cvlambda2_lava_mod
+  )
+  r2v_lava_mod <- 1 - sum((yte - cvmin_yhat_lava_test)^2) / sum((yte - mean(ytr))^2)
+
+
+  cat("\nIn sample R2 (CV-min): ", r2_lava_mod)
+  cat("\nOut of Sample R2 (CV-min): ", r2v_lava_mod)
+
+
+  #### Use average model across cv-folds and refit model using all training data
+  ###### we won't report these results.
+  ###### Averaging is theoretically more solid, but cv-min is more practical.
+  n_tr <- length(ytr)
+  n_te <- length(yte)
+  yhat_tr_lava_mod <- matrix(0, n_tr, Kf)
+  yhat_te_lava_mod <- matrix(0, n_te, Kf)
+
+
+  for (k in 1:Kf) {
+    indk <- cvgroup == k
+
+    k_xtr_mod <- xtr_mod[!indk, ]
+    k_ytr <- ytr[!indk]
+
+    # Lava
+    yhat_tr_lava_mod[, k] <- as.vector(lava_predict(k_xtr_mod, k_ytr,
+      newX = xtr_mod,
+      lambda1 = cvlambda1_lava_mod,
+      lambda2 = cvlambda2_lava_mod
+    ))
+    yhat_te_lava_mod[, k] <- as.vector(lava_predict(k_xtr_mod, k_ytr,
+      newX = xte_mod,
+      lambda1 = cvlambda1_lava_mod,
+      lambda2 = cvlambda2_lava_mod
+    ))
+  }
+
+  avg_yhat_lava_tr <- rowMeans(yhat_tr_lava_mod)
+  avg_yhat_lava_test <- rowMeans(yhat_te_lava_mod)
+
+  r2_cv_ave_lava_mod <- 1 - sum((ytr - avg_yhat_lava_tr)^2) / sum((ytr - mean(ytr))^2)
+  r2v_cv_ave_lava_mod <- 1 - sum((yte - avg_yhat_lava_test)^2) / sum((yte - mean(ytr))^2)
+
+  cat("\nIn sample R2 (Average Across Folds): ", r2_cv_ave_lava_mod)
+  cat("\nOut of Sample R2 (Average Across Folds): ", r2v_cv_ave_lava_mod)
+
+  return(c(
+    cvlambda1_lava_mod,
+    cvlambda2_lava_mod,
+    cvmin_yhat_lava_tr, # CV_min
+    cvmin_yhat_lava_test, # CV_min
+    r2_lava_mod, # CV_min
+    r2v_lava_mod, # CV_min
+    avg_yhat_lava_tr, # Average across Folds
+    avg_yhat_lava_test, # Average across Folds
+    r2_cv_ave_lava_mod, # Average across Folds
+    r2v_cv_ave_lava_mod # Average across Folds
+  ))
+}
+```
+
+```{r evaluate out-of-sample prediction, warning=FALSE}
+r2_score <- function(preds, actual, ytrain = y) {
+  rss <- sum((preds - actual)^2) ## residual sum of squares
+  ## total sum of squares, we take mean(ytrain) as mean(actual) is an out-of-sample object
+  tss <- sum((actual - mean(ytrain))^2)
+  rsq <- 1 - rss / tss
+  return(rsq)
+}
+
+## I use the "population" as the test sample
+Xpop <- res$Xpop
+ypop <- res$ypop
+
+## calculate R square for each method
+r2_lasso_cv <- r2_score(predict(fit_lasso_cv, newx = Xpop, s = "lambda.min"), ypop)
+r2_ridge <- r2_score(predict(fit_ridge, newx = Xpop, s = "lambda.min"), ypop)
+r2_elnet <- r2_score(predict(fit_elnet, newx = Xpop, s = "lambda.min"), ypop)
+r2_lasso <- r2_score(predict(fit_rlasso, newdata = (Xpop)), (ypop))
+r2_lasso_post <- r2_score(predict(fit_rlasso_post, newdata = (Xpop)), (ypop))
+r2_lava_pop <- lava_yhat_r2(X, Xpop, y, ypop)
+
+```{r}
+table <- matrix(0, 6, 1)
+table[1, 1] <- r2_lasso_cv
+table[2, 1] <- r2_ridge
+table[3, 1] <- r2_elnet
+table[4, 1] <- r2_lasso
+table[5, 1] <- r2_lasso_post
+table[6, 1] <- r2_lava_pop[[6]]
+
+colnames(table) <- c("R square (sparse setting)")
+rownames(table) <- c(
+  "Cross-Validated LASSO", "Cross-Validated Ridge", "Cross-Validated Elastic Net",
+  "LASSO (plug-in)", "Post-LASSO", "Lava (plug-in)"
+)
+tab <- xtable(table, digits = 3)
+## print(tab, type = "latex") ## set type="latex" for printing table in LaTeX
+print(table)
+```
+
+```
+
+## Dense and Sparse and Dense Setting Setup (Omitted)
+
+```{r dense and sparse and dense, warning=FALSE, include=FALSE}
+
+## set up the basic parameters - dense
+set.seed(1)
+n <- 100
+p <- 400
+res <- gen_data(n, p, regime = "dense")
+X <- res$X
+y <- res$y
+betas <- res$beta
+
+## plot betas
+dense <- ggplot(data.frame(
+  beta = seq_along(betas),
+  magnitude = sort(abs(betas),decreasing = TRUE)),
+       aes(x = beta, y = magnitude)) +
+  geom_line(linetype = "solid", color = "blue3",lwd=0.4) +
+  geom_point(shape = 21, size = 2, stroke = 0.6,
+             color = "blue3", fill = "white") +
+  xlim(1,20) +
+  ylim(0.35,0.65) +
+  labs(
+    x = "j",
+    y = "j-th largest coefficient"
+  ) +
+  theme_bw() +
+  ggtitle("Dense") +
+  theme(text = element_text(family="Palatino"),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(size=12,hjust = 0.5),
+        axis.line = element_blank(),
+        axis.text.y = element_text(size=10),
+        axis.text.x = element_text(size=10),
+        axis.title = element_text(size=12))
+
+## set up the basic parameters - dense
+set.seed(1)
+n <- 100
+p <- 400
+res <- gen_data(n, p, regime = "sparsedense")
+X <- res$X
+y <- res$y
+betas <- res$beta
+
+## plot betas
+sparsedense <- ggplot(data.frame(
+  beta = seq_along(betas),
+  magnitude = sort(abs(betas),decreasing = TRUE)),
+       aes(x = beta, y = magnitude)) +
+  geom_line(linetype = "solid", color = "red3",lwd=0.4) +
+  geom_point(shape = 21, size = 2, stroke = 0.6,
+             color = "red3", fill = "white") +
+  xlim(1,20) +
+  labs(
+    x = "j",
+    y = "j-th largest coefficient"
+  ) +
+  ggtitle("Sparse and Dense") +
+  theme_bw() +
+  theme(text = element_text(family="Palatino"),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(size=12,hjust = 0.5),
+        axis.line = element_blank(),
+        axis.text.y = element_text(size=10),
+        axis.text.x = element_text(size=10),
+        axis.title = element_text(size=12))
+
+## plot
+ggarrange(dense,sparsedense,nrow=1)
+## ggsave("Figure 3.4.jpg", dpi=400,width=16.5,height=7.5,units = "cm")
+```
+
